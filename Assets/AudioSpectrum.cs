@@ -13,6 +13,7 @@ public class AudioSpectrum : MonoBehaviour
     public static int FFTSIZE = 1024; // https://en.wikipedia.org/wiki/Fast_Fourier_transform
     public static float[] samples = new float[FFTSIZE];
     public static float audioAmp = 0f;
+    public static float freqLow = 0f;
     void Start()
     {
         source = GetComponent<AudioSource>();       
@@ -26,6 +27,10 @@ public class AudioSpectrum : MonoBehaviour
         for (int i = 0; i < FFTSIZE; i++)
         {
             audioAmp += samples[i];
-        }        
+        }
+        for (int i = 400;i < 600; i++)
+        {
+            freqLow += samples[i];
+        }
     }
 }

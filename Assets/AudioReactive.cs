@@ -62,7 +62,7 @@ public class AudioReactive : MonoBehaviour
         // Measure Time 
         // Time.deltaTime = The interval in seconds from the last frame to the current one
         // but what if time flows according to the music's amplitude?
-        time += Time.deltaTime * AudioSpectrum.audioAmp; 
+        time += Time.deltaTime * AudioSpectrum.freqLow; 
         // what to update over time?
         for (int i =0; i < numSphere; i++){
             // Lerp : Linearly interpolates between two points.
@@ -75,14 +75,14 @@ public class AudioReactive : MonoBehaviour
             // Lerp logic. Update position       
             t = i* 2 * Mathf.PI / numSphere;
             spheres[i].transform.position = Vector3.Lerp(startPosition[i], endPosition[i], lerpFraction);
-            float scale = 1f + AudioSpectrum.audioAmp;
+            float scale = 1f + AudioSpectrum.freqLow;
             spheres[i].transform.localScale = new Vector3(scale, 1f, 1f);
-            spheres[i].transform.Rotate(AudioSpectrum.audioAmp, 1f, 1f);
+            spheres[i].transform.Rotate(AudioSpectrum.freqLow, 1f, 1f);
             
             // Color Update over time
             Renderer sphereRenderer = spheres[i].GetComponent<Renderer>();
             float hue = (float)i / numSphere; // Hue cycles through 0 to 1
-            Color color = Color.HSVToRGB(Mathf.Abs(hue * Mathf.Cos(time)), Mathf.Cos(AudioSpectrum.audioAmp / 10f), 2f + Mathf.Cos(time)); // Full saturation and brightness
+            Color color = Color.HSVToRGB(Mathf.Abs(hue * Mathf.Cos(time)), Mathf.Cos(AudioSpectrum.freqLow / 10f), 2f + Mathf.Cos(time)); // Full saturation and brightness
             sphereRenderer.material.color = color;
         }
     }
