@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ChangePos : MonoBehaviour
 {
+    /*
     // 2D arrays: [segmentIndex, sphereIndex]
     // Row = time segment (0-10, 10-20, 20-30)
     // Col = sphere id
@@ -61,4 +62,5 @@ public class ChangePos : MonoBehaviour
 
         }
     }
+    */
 }
