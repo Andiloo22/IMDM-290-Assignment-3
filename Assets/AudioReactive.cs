@@ -20,6 +20,7 @@ public class AudioReactive : MonoBehaviour
     float part2 = 24;
     float part3 = 48;
     float part4 = 97;
+    float part5 = 120;
 
     // Start is called before the first frame update
     void Start()
@@ -83,12 +84,18 @@ public class AudioReactive : MonoBehaviour
             spectrum = AudioSpectrum.vocal3;
             Debug.Log("part3");
         }
-        // ***Here, we use audio Amplitude, where else do you want to use?
-        // Measure Time 
-        // Time.deltaTime = The interval in seconds from the last frame to the current one
-        // but what if time flows according to the music's amplitude?
-        //time += Time.deltaTime * AudioSpectrum.audioAmp;
-        time += Time.deltaTime * spectrum;
+        else if (timer <= part5)
+        {
+            spectrum = AudioSpectrum.bell4;
+            Debug.Log("part4");
+        }
+
+            // ***Here, we use audio Amplitude, where else do you want to use?
+            // Measure Time 
+            // Time.deltaTime = The interval in seconds from the last frame to the current one
+            // but what if time flows according to the music's amplitude?
+            //time += Time.deltaTime * AudioSpectrum.audioAmp;
+            time += Time.deltaTime * spectrum;
         Debug.Log(spectrum);
         // what to update over time?
         for (int i = 0; i < numSphere; i++)
