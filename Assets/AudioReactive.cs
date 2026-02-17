@@ -9,7 +9,7 @@ using UnityEngine;
 public class AudioReactive : MonoBehaviour
 {
     GameObject[] spheres;
-    static int numSphere = 200; 
+    static int numSphere = 200;
     float time = 0f;
     Vector3[] initPos;
     Vector3[] startPosition, endPosition;
@@ -22,20 +22,22 @@ public class AudioReactive : MonoBehaviour
         // Assign proper types and sizes to the variables.
         spheres = new GameObject[numSphere];
         initPos = new Vector3[numSphere]; // Start positions
-        startPosition = new Vector3[numSphere]; 
+        startPosition = new Vector3[numSphere];
         endPosition = new Vector3[numSphere];
         // Define target positions. Start = random, End = heart 
-        for (int i =0; i < numSphere; i++){
+        for (int i = 0; i < numSphere; i++)
+        {
             // Random start positions
             float r = 10f;
-            startPosition[i] = new Vector3(r * Random.Range(-1f, 1f), r * Random.Range(-1f, 1f), r * Random.Range(-1f, 1f));        
+            startPosition[i] = new Vector3(r * Random.Range(-1f, 1f), r * Random.Range(-1f, 1f), r * Random.Range(-1f, 1f));
 
             r = 3f; // radius of the circle
             // Circular end position
             endPosition[i] = new Vector3(r * Mathf.Sin(i * 2 * Mathf.PI / numSphere), r * Mathf.Cos(i * 2 * Mathf.PI / numSphere));
         }
         // Let there be spheres..
-        for (int i =0; i < numSphere; i++){
+        for (int i = 0; i < numSphere; i++)
+        {
             // Draw primitive elements:
             // https://docs.unity3d.com/6000.0/Documentation/ScriptReference/GameObject.CreatePrimitive.html
             spheres[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -62,27 +64,30 @@ public class AudioReactive : MonoBehaviour
         // Measure Time 
         // Time.deltaTime = The interval in seconds from the last frame to the current one
         // but what if time flows according to the music's amplitude?
-        time += Time.deltaTime * AudioSpectrum.freqLow; 
+        //time += Time.deltaTime * AudioSpectrum.audioAmp;
+        time += Time.deltaTime * AudioSpectrum.drum2;
+        Debug.Log(AudioSpectrum.drum2);
         // what to update over time?
-        for (int i =0; i < numSphere; i++){
+        for (int i = 0; i < numSphere; i++)
+        {
             // Lerp : Linearly interpolates between two points.
             // https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.Lerp.html
             // Vector3.Lerp(startPosition, endPosition, lerpFraction)
-            
+
             // lerpFraction variable defines the point between startPosition and endPosition (0~1)
             lerpFraction = Mathf.Sin(time) * 0.5f + 0.5f;
 
             // Lerp logic. Update position       
-            t = i* 2 * Mathf.PI / numSphere;
+            t = i * 2 * Mathf.PI / numSphere;
             spheres[i].transform.position = Vector3.Lerp(startPosition[i], endPosition[i], lerpFraction);
-            float scale = 1f + AudioSpectrum.freqLow;
+            float scale = 1f + AudioSpectrum.drum2;
             spheres[i].transform.localScale = new Vector3(scale, 1f, 1f);
-            spheres[i].transform.Rotate(AudioSpectrum.freqLow, 1f, 1f);
-            
+            spheres[i].transform.Rotate(AudioSpectrum.drum2, 1f, 1f);
+
             // Color Update over time
             Renderer sphereRenderer = spheres[i].GetComponent<Renderer>();
             float hue = (float)i / numSphere; // Hue cycles through 0 to 1
-            Color color = Color.HSVToRGB(Mathf.Abs(hue * Mathf.Cos(time)), Mathf.Cos(AudioSpectrum.freqLow / 10f), 2f + Mathf.Cos(time)); // Full saturation and brightness
+            Color color = Color.HSVToRGB(Mathf.Abs(hue * Mathf.Cos(time)), Mathf.Cos(AudioSpectrum.drum2 / 10f), 2f + Mathf.Cos(time)); // Full saturation and brightness
             sphereRenderer.material.color = color;
         }
     }

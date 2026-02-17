@@ -13,7 +13,8 @@ public class AudioSpectrum : MonoBehaviour
     public static int FFTSIZE = 1024; // https://en.wikipedia.org/wiki/Fast_Fourier_transform
     public static float[] samples = new float[FFTSIZE];
     public static float audioAmp = 0f;
-    public static float freqLow = 0f;
+    public static float drum1 = 0f;
+    public static float drum2 = 0f;
     void Start()
     {
         source = GetComponent<AudioSource>();       
@@ -23,14 +24,20 @@ public class AudioSpectrum : MonoBehaviour
         // The source (time domain) transforms into samples in frequency domain 
         GetComponent<AudioSource>().GetSpectrumData(samples, 0, FFTWindow.Hanning);
         // Empty first, and pull down the value.
-        audioAmp = 0f;
+        /*audioAmp = 0f;
         for (int i = 0; i < FFTSIZE; i++)
         {
             audioAmp += samples[i];
         }
-        for (int i = 400;i < 600; i++)
+        drum1 = 0f;*/
+        for (int i = 12; i < 26; i++)
         {
-            freqLow += samples[i];
+            drum1 += samples[i];
+        }
+        drum2 = 0f;
+        for (int i = 1; i < 9; i++)
+        {
+            drum2 += samples[i];
         }
     }
 }
