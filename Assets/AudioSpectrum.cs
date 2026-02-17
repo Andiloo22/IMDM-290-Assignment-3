@@ -15,6 +15,7 @@ public class AudioSpectrum : MonoBehaviour
     public static float audioAmp = 0f;
     public static float drum1 = 0f;
     public static float drum2 = 0f;
+    public static float vocal3 = 0f;
     void Start()
     {
         source = GetComponent<AudioSource>();       
@@ -28,16 +29,27 @@ public class AudioSpectrum : MonoBehaviour
         for (int i = 0; i < FFTSIZE; i++)
         {
             audioAmp += samples[i];
-        }
-        drum1 = 0f;*/
+        }*/
+
+        drum1 = 0f;
         for (int i = 12; i < 26; i++)
         {
             drum1 += samples[i];
         }
+        drum1 *= 2;
+
         drum2 = 0f;
-        for (int i = 1; i < 9; i++)
+        for (int i = 15; i < 18; i++)
         {
             drum2 += samples[i];
         }
+        drum2 *= 10;
+
+        vocal3 = 0f;
+        for (int i = 120; i < 145; i++)
+        {
+            vocal3 += samples[i];
+        }
+        vocal3 *= 5;
     }
 }

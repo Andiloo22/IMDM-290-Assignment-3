@@ -15,6 +15,11 @@ public class AudioReactive : MonoBehaviour
     Vector3[] startPosition, endPosition;
     float lerpFraction; // Lerp point between 0~1
     float t;
+    float spectrum;
+    float timer;
+    float part2 = 24;
+    float part3 = 48;
+    float part4 = 97;
 
     // Start is called before the first frame update
     void Start()
@@ -60,13 +65,31 @@ public class AudioReactive : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        timer += Time.deltaTime;
+
+        if (timer <= part2)
+        {
+            spectrum = AudioSpectrum.drum1;
+            Debug.Log("part1");
+
+        }
+        else if (timer <= part3)
+        {
+            spectrum = AudioSpectrum.drum2;
+            Debug.Log("part2");
+        }
+        else if (timer <= part4)
+        {
+            spectrum = AudioSpectrum.vocal3;
+            Debug.Log("part3");
+        }
         // ***Here, we use audio Amplitude, where else do you want to use?
         // Measure Time 
         // Time.deltaTime = The interval in seconds from the last frame to the current one
         // but what if time flows according to the music's amplitude?
         //time += Time.deltaTime * AudioSpectrum.audioAmp;
-        time += Time.deltaTime * AudioSpectrum.drum2;
-        Debug.Log(AudioSpectrum.drum2);
+        time += Time.deltaTime * spectrum;
+        Debug.Log(spectrum);
         // what to update over time?
         for (int i = 0; i < numSphere; i++)
         {
@@ -80,14 +103,14 @@ public class AudioReactive : MonoBehaviour
             // Lerp logic. Update position       
             t = i * 2 * Mathf.PI / numSphere;
             spheres[i].transform.position = Vector3.Lerp(startPosition[i], endPosition[i], lerpFraction);
-            float scale = 1f + AudioSpectrum.drum2;
+            float scale = 1f + spectrum;
             spheres[i].transform.localScale = new Vector3(scale, 1f, 1f);
-            spheres[i].transform.Rotate(AudioSpectrum.drum2, 1f, 1f);
+            spheres[i].transform.Rotate(spectrum, 1f, 1f);
 
             // Color Update over time
             Renderer sphereRenderer = spheres[i].GetComponent<Renderer>();
             float hue = (float)i / numSphere; // Hue cycles through 0 to 1
-            Color color = Color.HSVToRGB(Mathf.Abs(hue * Mathf.Cos(time)), Mathf.Cos(AudioSpectrum.drum2 / 10f), 2f + Mathf.Cos(time)); // Full saturation and brightness
+            Color color = Color.HSVToRGB(Mathf.Abs(hue * Mathf.Cos(time)), Mathf.Cos(spectrum / 10f), 2f + Mathf.Cos(time)); // Full saturation and brightness
             sphereRenderer.material.color = color;
         }
     }
