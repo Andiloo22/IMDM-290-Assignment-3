@@ -15,6 +15,14 @@ public class AudioReactive : MonoBehaviour
     Vector3[] initPos;
     Vector3[] startPosition, endPosition;
     float lerpFraction; // Lerp point between 0~1
+
+    //peak swirl effect
+    GameObject[] swirl;
+    int swirlObjs = 20;
+    Vector3[] swirlStart;
+    Vector3[] swirlEnd;
+    float swirlTime = 0f;
+
     float t;
     float spectrum;
     float spectrum2;
@@ -72,6 +80,38 @@ public class AudioReactive : MonoBehaviour
             MeshFilter cubeMesh = spheres[i].GetComponent<MeshFilter>();
             cubeMesh.mesh = flower;
         }
+
+        //swirl p3?
+        swirl = new GameObject[swirlObjs];
+        swirlStart = new Vector3[swirlObjs];
+        swirlEnd = new Vector3[swirlObjs];
+
+        float radiusS = 1f;
+        float radiusL = 20f;
+
+        for (int j = 0; j < swirlObjs; j++)
+        {
+            //change start pos to a circle in center of screen
+            float angle = j * Mathf.PI * 2f / swirlObjs;
+
+            swirlStart[j] = new Vector3(Mathf.Cos(angle) * radiusS, 
+                                        Mathf.Sin(angle) * radiusS, 
+                                        0f);
+
+            // Circular end position
+            swirlEnd[j] = new Vector3(Mathf.Cos(angle) * radiusL, 
+                                    Mathf.Sin(angle) * radiusL, 
+                                    0f);
+
+            swirl[j] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            swirl[j].transform.position = swirlStart[j];
+            swirl[j].transform.localScale = Vector3.zero; //hidden until triggered
+
+            Renderer r = swirl[j].GetComponent<Renderer>();
+            r.material.color = Color.cyan;
+            //MeshFilter cubeMesh = swirl[j].GetComponent<MeshFilter>();
+            //cubeMesh.mesh = flower;
+        }
     }
 
     // Update is called once per frame
@@ -95,14 +135,20 @@ public class AudioReactive : MonoBehaviour
         }
         else if (timer <= part4)
         {
-            spectrum = AudioSpectrum.vocal3;
+            UpdateSwirl(AudioSpectrum.vocal3); //at peak, change to swirl pattern
+            //spectrum = AudioSpectrum.vocal3;
             Debug.Log("part3");
         }
         else if (timer <= part5)
         {
+            //if (timer >= part3) UpdateSwirl(AudioSpectrum.vocal3); //at peak, change to swirl pattern
             backCol = orange;
             spectrum = AudioSpectrum.overall4;
             Debug.Log("part4");
+        }
+        else
+        {
+            HideSwirl(); //hide swirl objs
         }
 
         float spectrum2 = AudioSpectrum.bass;
@@ -140,5 +186,38 @@ public class AudioReactive : MonoBehaviour
 
         Camera camera = Camera.main;
         camera.backgroundColor = Color.HSVToRGB(backCol, spectrum2, 1f);
+    }
+
+    //manage pattern change
+    void UpdateSwirl(float spectr)
+    {
+        swirlTime += Time.deltaTime * spectr;
+
+        for (int i = 0; i < swirlObjs; i++)
+        {
+            float delay = i * 0.04f; //delay ripple travel
+            float raw = (swirlTime-delay) % 1f;
+            if (raw < 0) raw += 1f;
+
+            float lerp = raw;
+
+            swirl[i].transform.position = Vector3.Lerp(swirlStart[i], 
+                                                    swirlEnd[i], 
+                                                    lerp);
+
+            //pulse obj scale
+            float scale = 0.3f + spectr * 0.75f;
+            swirl[i].transform.localScale = Vector3.one * scale;
+        }
+    }
+    //hide the objects when not used
+    void HideSwirl()
+    {
+        for (int i = 0; i < swirlObjs; i++)
+        {
+            swirl[i].transform.localScale = Vector3.Lerp(swirl[i].transform.localScale,
+                                                            Vector3.zero,
+                                                            Time.deltaTime * 5f);
+        }
     }
 }
