@@ -141,12 +141,12 @@ public class AudioReactive : MonoBehaviour
 
             swirlStart[j] = new Vector3(Mathf.Cos(angle) * radiusS, 
                                         Mathf.Sin(angle) * radiusS, 
-                                        0f);
+                                        5f);
 
             // Circular end position
             swirlEnd[j] = new Vector3(Mathf.Cos(angle) * radiusL, 
                                     Mathf.Sin(angle) * radiusL, 
-                                    0f);
+                                    5f);
 
             swirl[j] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             swirl[j].transform.position = swirlStart[j];
