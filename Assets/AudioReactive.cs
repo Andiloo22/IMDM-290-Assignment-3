@@ -6,9 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class AudioReactive : MonoBehaviour
 {
+
     GameObject[] flowers;
     public Mesh flowerMesh;
     static int numFlowers = 10;
@@ -32,6 +34,7 @@ public class AudioReactive : MonoBehaviour
     Vector3[] swirlStart;
     Vector3[] swirlEnd;
     float swirlTime = 0f;
+    public Mesh swirlMesh;
 
     float t;
     float spectrum;
@@ -45,6 +48,9 @@ public class AudioReactive : MonoBehaviour
     float part3 = 48;
     float part4 = 97;
     float part5 = 120;
+    float part6 = 147;
+    float part7 = 196;
+    public Light light;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +61,11 @@ public class AudioReactive : MonoBehaviour
         startPosition = new Vector3[numFlowers];
         endPosition = new Vector3[numFlowers];
         // Define target positions. Start = random, End = heart 
+        Camera camera = Camera.main;
+        camera.backgroundColor = Color.HSVToRGB(0.55f, 0.75f, 1f);
+
+        light.color = Color.HSVToRGB(0.55f, 0.75f, 1f);
+
         for (int i = 0; i < numFlowers; i++)
         {
             // Random start positions
@@ -106,11 +117,11 @@ public class AudioReactive : MonoBehaviour
 
             flowerShape[i] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             flowerShape[i].transform.position = flowerShapeStart[i];
-            flowerShape[i].transform.localRotation = Quaternion.Euler(270f, 0f, 0f); ;
+            flowerShape[i].transform.localRotation = Quaternion.Euler(270f, 0f, 0f);
             flowerShape[i].transform.localScale = Vector3.one * 0.05f;
 
             Renderer rend = flowerShape[i].GetComponent<Renderer>();
-            rend.material.color = Color.magenta;
+            rend.material.color = Color.HSVToRGB(0.8f, 0.75f, 1f);
             MeshFilter flowerShapeFilter = flowerShape[i].GetComponent<MeshFilter>();
             flowerShapeFilter.mesh = flowerShapeMesh;
         }
@@ -140,9 +151,12 @@ public class AudioReactive : MonoBehaviour
             swirl[j] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             swirl[j].transform.position = swirlStart[j];
             swirl[j].transform.localScale = Vector3.zero; //hidden until triggered
+            swirl[j].transform.localRotation = Quaternion.Euler(270f, 0f, 0f);
 
             Renderer r = swirl[j].GetComponent<Renderer>();
-            r.material.color = Color.cyan;
+            r.material.color = Color.HSVToRGB(0.08f, 0.75f, 1f);
+            MeshFilter swirlMeshFilt = swirl[j].GetComponent<MeshFilter>();
+            swirlMeshFilt.mesh = swirlMesh;
             //MeshFilter cubeMesh = swirl[j].GetComponent<MeshFilter>();
             //cubeMesh.mesh = flower;
         }
@@ -153,6 +167,7 @@ public class AudioReactive : MonoBehaviour
     {
         random = Random.Range(0, spectrum);
         timer += Time.deltaTime;
+        Debug.Log(timer);
 
         if (timer <= part2)
         {
@@ -176,16 +191,26 @@ public class AudioReactive : MonoBehaviour
         else if (timer <= part5)
         {
             //if (timer >= part3) UpdateSwirl(AudioSpectrum.vocal3); //at peak, change to swirl pattern
-            backCol = 0f;
             spectrum = AudioSpectrum.overall4;
             Debug.Log("part4");
         }
+        else if (timer <= part6)
+        {
+            HideSwirl();
+            spectrum = AudioSpectrum.vocal3;
+            Debug.Log("part5");
+        }
+        else if (timer <= part7)
+        {
+            Debug.Log("part6");
+        }
         else
         {
-            HideSwirl(); //hide swirl objs
+            spectrum = AudioSpectrum.vocal3;
+            Debug.Log("part7");
         }
 
-        spectrum = Mathf.Lerp(spectrum, spectrum, Time.deltaTime * .25f);
+            spectrum = Mathf.Lerp(spectrum, spectrum, Time.deltaTime * .25f);
         
 
         float spectrum2 = AudioSpectrum.bass;
@@ -235,8 +260,9 @@ public class AudioReactive : MonoBehaviour
             flowerShape[i].transform.Rotate(0f, spectrum2, 0f);
         }
 
-        Camera camera = Camera.main;
-        camera.backgroundColor = Color.HSVToRGB(0.55f, 0.75f, 1f);
+        light.color = Color.HSVToRGB(spectrum2, 0.75f, 1f);
+        light.intensity = spectrum2 * 10f;
+
     }
 
     //manage pattern change
@@ -257,8 +283,8 @@ public class AudioReactive : MonoBehaviour
                                                     lerp);
 
             //pulse obj scale
-            float scale = 0.3f + spectr * 0.75f;
-            swirl[i].transform.localScale = Vector3.one * scale;
+            float scale = 0.01f + spectr * 0.75f;
+            swirl[i].transform.localScale =  new Vector3(0.5f * scale, 0.5f * scale, 0.5f * scale);
         }
     }
     //hide the objects when not used
@@ -269,6 +295,7 @@ public class AudioReactive : MonoBehaviour
             swirl[i].transform.localScale = Vector3.Lerp(swirl[i].transform.localScale,
                                                             Vector3.zero,
                                                             Time.deltaTime * 5f);
+            _ = swirl[i] != enabled;
         }
     }
 }
