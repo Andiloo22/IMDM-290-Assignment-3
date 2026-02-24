@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 2010882403}
   - component: {fileID: 2010882402}
   - component: {fileID: 2010882401}
+  - component: {fileID: 2010882404}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -302,12 +303,25 @@ Transform:
   m_GameObject: {fileID: 2010882400}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2010882404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2010882400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381bfe4b811c1b14ba47586ea6783c7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 30
 --- !u!1 &2135204209
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,7 +353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b0b51726449224cb1ee8fc5b585907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flower: {fileID: 7764154922893000305, guid: 70a4fb85d63e60b4e988acb90d06faae, type: 3}
+  flowerMesh: {fileID: -1365108548044247890, guid: d2e13b2929bdd5849bc019d8cbf7e960, type: 3}
+  flowerShapeMesh: {fileID: -6339838620732316443, guid: 17307fe2cf2794143b05bf9cd7b1bee4, type: 3}
 --- !u!114 &2135204211
 MonoBehaviour:
   m_ObjectHideFlags: 0
