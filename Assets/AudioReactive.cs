@@ -190,7 +190,7 @@ public class AudioReactive : MonoBehaviour
         }
         else if (timer <= part5)
         {
-            //if (timer >= part3) UpdateSwirl(AudioSpectrum.vocal3); //at peak, change to swirl pattern
+            UpdateSwirl(AudioSpectrum.vocal3); 
             spectrum = AudioSpectrum.overall4;
             Debug.Log("part4");
         }
