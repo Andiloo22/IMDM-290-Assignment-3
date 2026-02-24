@@ -18,6 +18,7 @@ public class AudioReactive : MonoBehaviour
     Vector3[] initPos;
     Vector3[] startPosition, endPosition;
     float lerpFraction; // Lerp point between 0~1
+    public Material material;
 
     GameObject[] flowerShape;
     Vector3[] flowerShapeStart;
@@ -94,6 +95,7 @@ public class AudioReactive : MonoBehaviour
             // HSV color space: https://en.wikipedia.org/wiki/HSL_and_HSV
             float hue = (float)i / numFlowers; // Hue cycles through 0 to 1
             Color color = Color.HSVToRGB(hue, 1f, 1f); // Full saturation and brightness
+            sphereRenderer.material = material;
             sphereRenderer.material.color = color;
             MeshFilter cubeMesh = flowers[i].GetComponent<MeshFilter>();
             cubeMesh.mesh = flowerMesh;
@@ -121,6 +123,7 @@ public class AudioReactive : MonoBehaviour
             flowerShape[i].transform.localScale = Vector3.one * 0.05f;
 
             Renderer rend = flowerShape[i].GetComponent<Renderer>();
+            rend.material = material;
             rend.material.color = Color.HSVToRGB(0.8f, 0.75f, 1f);
             MeshFilter flowerShapeFilter = flowerShape[i].GetComponent<MeshFilter>();
             flowerShapeFilter.mesh = flowerShapeMesh;
@@ -154,6 +157,7 @@ public class AudioReactive : MonoBehaviour
             swirl[j].transform.localRotation = Quaternion.Euler(270f, 0f, 0f);
 
             Renderer r = swirl[j].GetComponent<Renderer>();
+            r.material = material;
             r.material.color = Color.HSVToRGB(0.08f, 0.75f, 1f);
             MeshFilter swirlMeshFilt = swirl[j].GetComponent<MeshFilter>();
             swirlMeshFilt.mesh = swirlMesh;

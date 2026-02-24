@@ -354,6 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flowerMesh: {fileID: -1365108548044247890, guid: d2e13b2929bdd5849bc019d8cbf7e960, type: 3}
+  material: {fileID: 2100000, guid: dd1c95c66f302a64585991ef3f152864, type: 2}
   flowerShapeMesh: {fileID: -6339838620732316443, guid: 17307fe2cf2794143b05bf9cd7b1bee4, type: 3}
   swirlMesh: {fileID: 1346857136090059877, guid: a64fd4979413c5b4aaab22dafa9fb024, type: 3}
   light: {fileID: 499499218}
