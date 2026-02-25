@@ -1,6 +1,5 @@
 // UMD IMDM290 
 // Instructor: Myungin Lee
-// All the same Lerp but using audio
 
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ public class AudioReactive : MonoBehaviour
     float time = 0f;
     Vector3[] initPos;
     Vector3[] startPosition, endPosition;
-    float lerpFraction; // Lerp point between 0~1
+    float lerpFraction;
     public Material material;
 
     GameObject[] flowerShape;
@@ -29,7 +28,6 @@ public class AudioReactive : MonoBehaviour
     int petals = 24;
     float flowerRadius = 8f;
 
-    //peak swirl effect
     GameObject[] swirl;
     int swirlObjs = 20;
     Vector3[] swirlStart;
@@ -53,15 +51,14 @@ public class AudioReactive : MonoBehaviour
     float part7 = 196;
     public Light light;
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Assign proper types and sizes to the variables.
+
         flowers = new GameObject[numFlowers];
-        initPos = new Vector3[numFlowers]; // Start positions
+        initPos = new Vector3[numFlowers];
         startPosition = new Vector3[numFlowers];
         endPosition = new Vector3[numFlowers];
-        // Define target positions. Start = random, End = heart 
+
         Camera camera = Camera.main;
         camera.backgroundColor = Color.HSVToRGB(0.55f, 0.75f, 1f);
 
@@ -69,32 +66,24 @@ public class AudioReactive : MonoBehaviour
 
         for (int i = 0; i < numFlowers; i++)
         {
-            // Random start positions
             float r = 5f;
             startPosition[i] = new Vector3(r * random, r * random, r * random);
 
-            // Circular end position
             r = 3f;
             endPosition[i] = new Vector3(r * Mathf.Sin(i * 2 * Mathf.PI / numFlowers), r * Mathf.Cos(i * 2 * Mathf.PI / numFlowers));
         }
-        // Let there be spheres..
         for (int i = 0; i < numFlowers; i++)
         {
-            // Draw primitive elements:
-            // https://docs.unity3d.com/6000.0/Documentation/ScriptReference/GameObject.CreatePrimitive.html
             flowers[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-            // Position
             initPos[i] = startPosition[i];
             flowers[i].transform.position = initPos[i];
             flowers[i].transform.localRotation = Quaternion.Euler(270f, 0f, 0f); ;
             flowers[i].transform.localScale = new Vector3(Random.Range(0.3f, 0.5f), Random.Range(0.3f, 0.5f), Random.Range(0.3f, 0.5f));
-            // Color
-            // Get the renderer of the spheres and assign colors.
+
             Renderer sphereRenderer = flowers[i].GetComponent<Renderer>();
-            // HSV color space: https://en.wikipedia.org/wiki/HSL_and_HSV
-            float hue = (float)i / numFlowers; // Hue cycles through 0 to 1
-            Color color = Color.HSVToRGB(hue, 1f, 1f); // Full saturation and brightness
+            float hue = (float)i / numFlowers;
+            Color color = Color.HSVToRGB(hue, 1f, 1f);
             sphereRenderer.material = material;
             sphereRenderer.material.color = color;
             MeshFilter cubeMesh = flowers[i].GetComponent<MeshFilter>();
@@ -129,7 +118,6 @@ public class AudioReactive : MonoBehaviour
             flowerShapeFilter.mesh = flowerShapeMesh;
         }
 
-        //swirl p3?
         swirl = new GameObject[swirlObjs];
         swirlStart = new Vector3[swirlObjs];
         swirlEnd = new Vector3[swirlObjs];
@@ -139,21 +127,19 @@ public class AudioReactive : MonoBehaviour
 
         for (int j = 0; j < swirlObjs; j++)
         {
-            //change start pos to a circle in center of screen
             float angle = j * Mathf.PI * 2f / swirlObjs;
 
             swirlStart[j] = new Vector3(Mathf.Cos(angle) * radiusS, 
                                         Mathf.Sin(angle) * radiusS, 
                                         5f);
 
-            // Circular end position
             swirlEnd[j] = new Vector3(Mathf.Cos(angle) * radiusL, 
                                     Mathf.Sin(angle) * radiusL, 
                                     5f);
 
             swirl[j] = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             swirl[j].transform.position = swirlStart[j];
-            swirl[j].transform.localScale = Vector3.zero; //hidden until triggered
+            swirl[j].transform.localScale = Vector3.zero;
             swirl[j].transform.localRotation = Quaternion.Euler(270f, 0f, 0f);
 
             Renderer r = swirl[j].GetComponent<Renderer>();
@@ -161,12 +147,9 @@ public class AudioReactive : MonoBehaviour
             r.material.color = Color.HSVToRGB(0.08f, 0.75f, 1f);
             MeshFilter swirlMeshFilt = swirl[j].GetComponent<MeshFilter>();
             swirlMeshFilt.mesh = swirlMesh;
-            //MeshFilter cubeMesh = swirl[j].GetComponent<MeshFilter>();
-            //cubeMesh.mesh = flower;
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         random = Random.Range(0, spectrum);
@@ -187,9 +170,8 @@ public class AudioReactive : MonoBehaviour
         }
         else if (timer <= part4)
         {
-            UpdateSwirl(AudioSpectrum.vocal3); //at peak, change to swirl pattern
+            UpdateSwirl(AudioSpectrum.vocal3);
             spectrum = AudioSpectrum.vocal3;
-            //spectrum = AudioSpectrum.vocal3;
             Debug.Log("part3");
         }
         else if (timer <= part5)
@@ -219,35 +201,22 @@ public class AudioReactive : MonoBehaviour
 
         float spectrum2 = AudioSpectrum.bass;
         spectrum2 = Mathf.Lerp(spectrum2, spectrum2, Time.deltaTime * 0.25f);
-        // ***Here, we use audio Amplitude, where else do you want to use?
-        // Measure Time 
-        // Time.deltaTime = The interval in seconds from the last frame to the current one
-        // but what if time flows according to the music's amplitude?
-        //time += Time.deltaTime * AudioSpectrum.audioAmp;
         time += Time.deltaTime * spectrum;
         Debug.Log(spectrum);
         Debug.Log(spectrum2 + "Spec 2");
-        // what to update over time?
         for (int i = 0; i < numFlowers; i++)
         {
-            // Lerp : Linearly interpolates between two points.
-            // https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.Lerp.html
-            // Vector3.Lerp(startPosition, endPosition, lerpFraction)
-
-            // lerpFraction variable defines the point between startPosition and endPosition (0~1)
             lerpFraction = Mathf.Sin(time) * 0.5f + 0.5f;
-
-            // Lerp logic. Update position       
+      
             t = i * 2 * Mathf.PI / numFlowers;
             flowers[i].transform.position = Vector3.Lerp(startPosition[i], endPosition[i], lerpFraction);
             float scale = FlowerScale + (spectrum);
             flowers[i].transform.localScale = new Vector3(scale, FlowerScale, scale);
             flowers[i].transform.Rotate(0f, spectrum, 0f);
 
-            // Color Update over time
             Renderer cubeRenderer = flowers[i].GetComponent<Renderer>();
-            float hue = (float)i / numFlowers; // Hue cycles through 0 to 1
-            Color color = Color.HSVToRGB(0.2f + (0.8f - 0.2f) * (Mathf.Clamp01(spectrum2)), 1f, 1f); // Full saturation and brightness
+            float hue = (float)i / numFlowers;
+            Color color = Color.HSVToRGB(0.2f + (0.8f - 0.2f) * (Mathf.Clamp01(spectrum2)), 1f, 1f);
             cubeRenderer.material.color = color;
         }
 
@@ -269,14 +238,14 @@ public class AudioReactive : MonoBehaviour
 
     }
 
-    //manage pattern change
+
     void UpdateSwirl(float spectr)
     {
         swirlTime += Time.deltaTime * spectr;
 
         for (int i = 0; i < swirlObjs; i++)
         {
-            float delay = i * 0.04f; //delay ripple travel
+            float delay = i * 0.04f;
             float raw = (swirlTime-delay) % 1f;
             if (raw < 0) raw += 1f;
 
@@ -286,12 +255,11 @@ public class AudioReactive : MonoBehaviour
                                                     swirlEnd[i], 
                                                     lerp);
 
-            //pulse obj scale
             float scale = 0.01f + spectr * 0.75f;
             swirl[i].transform.localScale =  new Vector3(0.5f * scale, 0.5f * scale, 0.5f * scale);
         }
     }
-    //hide the objects when not used
+
     void HideSwirl()
     {
         for (int i = 0; i < swirlObjs; i++)
